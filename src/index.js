@@ -1,17 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
+import {getFirestore} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCijqX0dYP6oP22W9MQE45_myb_2mMuR2I",
+  authDomain: "todo-app-49567.firebaseapp.com",
+  projectId: "todo-app-49567",
+  storageBucket: "todo-app-49567.appspot.com",
+  messagingSenderId: "44467572388",
+  appId: "1:44467572388:web:fcbb6609d62cc327aba031",
+  measurementId: "G-CWVY5WRK00"
+};  
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <App db={db} />
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
