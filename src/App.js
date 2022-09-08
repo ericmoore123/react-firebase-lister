@@ -1,69 +1,57 @@
 import "./App.css";
 import Todo from "./components/Todo";
 import closeImage from "./images/close.png";
-import { useState, useEffect } from "react";
-import { doc, addDoc, getDocs, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import AddTodo from "./components/AddTodo";
+import { useEffect, useState } from "react";
+import { db } from "./firebase";
+import {
+  query,
+  collection,
+  deleteDoc,
+  onSnapshot,
+  doc,
+} from "firebase/firestore";
 
-const App = (props) => {
-  const [newItem, setNewItem] = useState("");
-  const [documents, setDocuments] = useState([]);
-  const db = props.db; 
+const App = () => {
+  const [todos, setTodos] = useState([]);
 
-  useEffect( () => {
-    let arr = [];
-    const fetchDocs = async () => {
-      let data = await getDocs(collection(db, "Todos"));
-      data.forEach(doc => {
-        arr.push({id: doc.id, value: doc.data()})
+  useEffect(() => {
+    const q = query(collection(db, "Todos"));
+    const unsub = onSnapshot(q, (snapshot) => {
+      let tempArray = [];
+      snapshot.forEach((doc) => {
+        tempArray.push({
+          ...doc.data(),
+          id: doc.id,
+        });
       });
-      setDocuments(arr);
-    }
-    fetchDocs();
-  });
+      setTodos(tempArray);
+    });
+    return () => unsub();
+  }, []);
 
-  const handleRemoveItem = async (e) => {
-    const docRef = doc(db, 'Todos', e.target.parentNode.parentNode.id);
-    try{
-      await deleteDoc(docRef);
-      console.log('Item deleted successfully!');
-    }catch(err){
-      console.error(err);
-    }
-  };
-
-  const handleAddItem = async (e) => {
-    e.preventDefault();
-    
-    await addDoc(collection(db, "Todos"), {
-      Todo: newItem.value,
-      id: newItem.id
-    }).then(() => console.log('Item added successfully.'))
-      .catch(err => console.error(err));
-
-    setNewItem('');
-    e.target.todo_input.value = "";
+  const handleDelete = async (id) => {
+    await deleteDoc(doc(db, "Todos", id));
   };
 
   return (
     <div className="container">
       <h1>Todo List Application</h1>
-
-      <form onSubmit={handleAddItem}>
-        <label>List Item to add:</label>
-        <input required type="text" id="item-input" name="todo_input" onChange={input => setNewItem({value: input.target.value, id: Date.now() })} />
-        <button type="submit" className="btn add-item">
-          Add
-        </button>
-      </form>
+      <AddTodo />
 
       <p className="list-header">Item List:</p>
-        <div className="list-wrapper">
-          <ul className="item-list">
-            {documents.map((item) => (
-              <Todo key={item.value.id} id={item.id} removeItem={handleRemoveItem} item={item.value.Todo} image={closeImage} />
-            ))}
-          </ul>
-        </div>
+      <div className="list-wrapper">
+        <ul className="item-list">
+          {todos.map((item) => (
+            <Todo
+              key={item.id}
+              handleDelete={handleDelete}
+              todo={item}
+              image={closeImage}
+            />
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

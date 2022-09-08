@@ -1,16 +1,16 @@
 import React from "react";
 
-export default function Todo(props) {
+export default function Todo({ todo, handleDelete, image }) {
   return (
-    <li id={props.id} className="list-item">
+    <li className="list-item">
       <div className="todo-wrapper">
-        {props.item}
+        {todo.title}
         <img
           width="22"
           className="delete-icon"
-          src={props.image}
+          src={image}
           alt="Delete button"
-          onClick={props.removeItem}
+          onClick={() => handleDelete(todo.id)}
         />
       </div>
     </li>
