@@ -1,11 +1,13 @@
 import "./App.css";
 import Todo from "./components/Todo";
 import closeImage from "./images/close.png";
+import penImage from "./images/pen.png";
 import AddTodo from "./components/AddTodo";
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
 import {
   query,
+  updateDoc,
   collection,
   deleteDoc,
   onSnapshot,
@@ -16,8 +18,9 @@ const App = () => {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
+    console.log('Called')
     const q = query(collection(db, "Todos"));
-    const unsub = onSnapshot(q, (snapshot) => {
+    const getData = onSnapshot(q, (snapshot) => {
       let tempArray = [];
       snapshot.forEach((doc) => {
         tempArray.push({
@@ -27,11 +30,15 @@ const App = () => {
       });
       setTodos(tempArray);
     });
-    return () => unsub();
+    return () => getData();
   }, []);
 
   const handleDelete = async (id) => {
     await deleteDoc(doc(db, "Todos", id));
+  };
+
+  const handleEdit = async (todo, title) => {
+    await updateDoc(doc(db, "Todos", todo.id), {title: title});
   };
 
   return (
@@ -46,8 +53,10 @@ const App = () => {
             <Todo
               key={item.id}
               handleDelete={handleDelete}
+              handleEdit={handleEdit}
               todo={item}
-              image={closeImage}
+              penImage={penImage}
+              deleteImage={closeImage}
             />
           ))}
         </ul>

@@ -37,18 +37,23 @@ form{
   row-gap: 15px;
 }
 
-.todo-wrapper{
-  display: flex;
-  justify-content: space-between;
-}
-
 .list-item{
   background: whitesmoke;
   margin: 10px 0;
   padding: 10px 5px;
-  font-size: 20px;
-  max-width: 200px;
   list-style-type: none;
+}
+
+.list-item input{
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 18px;
+}
+
+.todo-wrapper{
+  display: flex;
+  justify-content: space-between;
 }
 
 .delete-icon{
@@ -58,4 +63,9 @@ form{
 
 .delete-icon:hover{
   transform: scale(1.1);
+}
+
+.icon-wrapper img{
+  margin: 5px;
+
 }
