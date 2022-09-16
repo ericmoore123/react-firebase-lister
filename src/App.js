@@ -1,7 +1,7 @@
 import "./App.css";
 import Todo from "./components/Todo";
-import closeImage from "./images/close.png";
-import penImage from "./images/pen.png";
+import closeImage from "./resources/images/close.png";
+import penImage from "./resources/images/pen.png";
 import AddTodo from "./components/AddTodo";
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
