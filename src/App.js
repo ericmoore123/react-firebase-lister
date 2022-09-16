@@ -18,7 +18,6 @@ const App = () => {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    console.log('Called')
     const q = query(collection(db, "Todos"));
     const getData = onSnapshot(q, (snapshot) => {
       let tempArray = [];
@@ -30,8 +29,8 @@ const App = () => {
       });
       setTodos(tempArray);
     });
-    return () => getData();
-  }, []);
+    return () => getData(); // Call function every time useeffect runs
+  }, []); // Empty array = called on mounts - state changes
 
   const handleDelete = async (id) => {
     await deleteDoc(doc(db, "Todos", id));
